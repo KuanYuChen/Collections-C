@@ -1,64 +1,56 @@
-#include "../src/stack.h"
-#include "test.h"
 #include <string.h>
 
-void test_stack_push();
-void test_stack_pop();
+#include "stack.h"
+#include "CppUTest/TestHarness_c.h"
 
-int main(int argc, char **argv)
+static Stack *s;
+TEST_GROUP_C_SETUP(StackTestsWithDefaults)
 {
-    cc_set_exit_on_failure(false);
+    stack_new(&s);
+};
 
-    test_stack_push();
-    test_stack_pop();
-
-    return cc_get_status();
-}
-
-void test_stack_push()
+TEST_GROUP_C_TEARDOWN(StackTestsWithDefaults)
 {
-    Stack *s = stack_new();
+    stack_destroy(s);
+};
 
+TEST_C(StackTestsWithDefaults, StackPush)
+{
     int a = 1;
     int b = 2;
     int c = 3;
 
-    stack_push(s, &a);
+    int *p;
 
-    cc_assert(stack_peek(s) == &a,
-              cc_msg("stack_push: Top stack element not as expected"));
+    stack_push(s, (void*)&a);
+    stack_peek(s, (void*)&p);
+    CHECK_EQUAL_C_POINTER(&a, p);
 
-    stack_push(s, &b);
+    stack_push(s, (void*) &b);
+    stack_peek(s, (void*)&p);
+    CHECK_EQUAL_C_POINTER(&b, p);
 
-    cc_assert(stack_peek(s) == &b,
-              cc_msg("stack_push: Top stack element not as expected"));
+    stack_push(s, (void*)&c);
+    stack_peek(s, (void*)&p);
+    CHECK_EQUAL_C_POINTER(&c, p);
+};
 
-    stack_push(s, &c);
-
-    cc_assert(stack_peek(s) == &c,
-              cc_msg("stack_push: Top stack element not as expected"));
-
-    stack_destroy(s);
-
-}
-
-void test_stack_pop()
+TEST_C(StackTestsWithDefaults, StackPop)
 {
-    Stack *s = stack_new();
-
     int a = 1;
     int b = 2;
     int c = 3;
 
-    stack_push(s, &a);
-    stack_push(s, &b);
-    stack_push(s, &c);
+    stack_push(s, (void*)&a);
+    stack_push(s, (void*)&b);
+    stack_push(s, (void*)&c);
 
-    cc_assert(stack_pop(s) == &c,
-              cc_msg("stack_pop: Top stack element not as expected"));
+    int *pop;
+    int *peek;
 
-    cc_assert(stack_peek(s) == &b,
-              cc_msg("stack_pop: Top stack element not as expected"));
+    stack_pop(s, (void*)&pop);
+    CHECK_EQUAL_C_POINTER(&c, pop);
 
-    stack_destroy(s);
-}
+    stack_peek(s, (void*)&peek);
+    CHECK_EQUAL_C_POINTER(&b, peek);
+};

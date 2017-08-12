@@ -1,6 +1,6 @@
 /*
  * Collections-C
- * Copyright (C) 2013-2014 Srđan Panić <srdja.panic@gmail.com>
+ * Copyright (C) 2013-2016 Srđan Panić <i@srdja.me>
  *
  * This file is part of Collections-C.
  *
@@ -18,34 +18,36 @@
  * along with Collections-C.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMON_H_
-#define COMMON_H_
 
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
-
-#ifdef ARCH_64
-#define MAX_POW_TWO (((size_t) 1) << 63)
-#else
-#define MAX_POW_TWO (((size_t) 1) << 31)
-#endif /* ARCH_64 */
-
-#define NO_SUCH_INDEX ((size_t) - 1)
-#define MAX_ELEMENTS  ((size_t) - 2)
-
-#if defined(_MSC_VER)
-
-#define       INLINE __inline
-#define FORCE_INLINE __forceinline
-
-#else
-
-#define       INLINE inline
-#define FORCE_INLINE inline __attribute__((always_inline))
-
-#endif /* _MSC_VER */
+#include "common.h"
 
 
-#endif /* COMMON_H_ */
+/**
+ * String comparator function.
+ *
+ * @param[in] str1 first string
+ * @param[in] str2 second string
+ *
+ * @return
+ */
+int cc_common_cmp_str(const void *str1, const void *str2)
+{
+    return strcmp((const char*) str1, (const char*) str2);
+}
+
+/**
+ * Pointer comparator function.
+ *
+ * @param[in] ptr1 first pointer
+ * @param[in] ptr2 second pointer
+ *
+ * @return
+ */
+int cc_common_cmp_ptr(const void *ptr1, const void *ptr2)
+{
+    if (ptr1 < ptr2)
+        return -1;
+    else if (ptr1 > ptr2)
+        return 1;
+    return 0;
+}
